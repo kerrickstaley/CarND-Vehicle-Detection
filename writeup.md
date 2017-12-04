@@ -80,8 +80,8 @@ Afterwards I did a floodfill to identify distinct islands in the thresholded ima
 I then ran my pipeline on a video. To decrease the number of false positives, I averaged the heatmap values over a
 10-frame window and applied the same threshold (5). This is the result:
 
-<a href="https://www.youtube.com/watch?v=1kzLLeNjDpM">
-<img src="https://img.youtube.com/vi/1kzLLeNjDpM/0.jpg">
+<a href="https://www.youtube.com/watch?v=Yqj3DQOrG00">
+<img src="https://img.youtube.com/vi/Yqj3DQOrG00/0.jpg">
 </a>
 
 ---
