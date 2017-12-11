@@ -10,10 +10,8 @@ My code for this project is in [this Jupyter Notebook](project.ipynb).
 
 For each 64x64 image in the supplied dataset of ~8000 car and ~8000 non-car images, I generated a feature vector using
 a Histogram of Oriented Gradients (HOG) technique. I first converted each image to the YCrCb color space, and then
-generated a HOG for each channel. I used 8x8 cells, 3x3 blocks, and 9 orientations for the HOG.
-
-After extracting the HOG features, I normalized them across my dataset so that the mean for each feature (each
-individual magnitude for a given orientation, cell, block, and channel) was zero and the variance was one.
+generated a HOG for each channel. I used 8x8 cells, 2x2 blocks, and 9 orientations for the HOG, for a total of 1764
+features.
 
 The code for this step is in the classes `FeatureExtractorUnnormalized` and `FeatureExtractor`.
 
@@ -29,10 +27,24 @@ Here is an example of a non-vehicle:
 I initially tried using a HOG on a grayscale version of the image (essentially just the Y channel) but I found that
 using YCrCb gave a higher accuracy (~97% vs ~92% on the test segment of the dataset).
 
+### Color Histogram
+
+For each image, I computed a color histogram in the LUV color space, with 32 histogrm bins for each channel. This
+produced a vector of 96 features for each image.
+
+### Color Spatial Binning
+
+For each image, I resized the image to 16x16 and took the LUV channel values for each pixel, producing a 768-value
+feature vector per image.
+
+### Normalization
+After extracting the HOG, color histogram, and spatially binned color features, I normalized them across my dataset so
+that the mean for each feature was zero and the variance was one. The total number of featues was 
+
 ### SVM
 
-I trained a linear SVM on the HOG features, using 80% of the data for training and 20% for testing. I achieved an
-accuracy of ~97% on the test data.
+I trained a linear SVM on the normalized features, using 80% of the data for training and 20% for testing. I achieved an
+accuracy of ~98.7% on the test data. In total there were 2628 features.
 
 ### Sliding Window Search
 
@@ -59,7 +71,7 @@ that were likely to be cars:
 <img src="test_images/test1.jpg" width="400">
 <img src="output_images/heatmap_viz.jpg" width="400">
 
-From there, I took a threshold on the number of overlapping bounding boxes. I found that 5 worked well:
+From there, I took a threshold on the number of overlapping bounding boxes. I found that 3 worked well:
 
 <img src="output_images/heatmap_threshold_viz.jpg" width="400">
 
@@ -78,10 +90,10 @@ Afterwards I did a floodfill to identify distinct islands in the thresholded ima
 ### Video Implementation
 
 I then ran my pipeline on a video. To decrease the number of false positives, I averaged the heatmap values over a
-10-frame window and applied the same threshold (5). This is the result:
+10-frame window and applied the same threshold (3). This is the result:
 
-<a href="https://www.youtube.com/watch?v=Yqj3DQOrG00">
-<img src="https://img.youtube.com/vi/Yqj3DQOrG00/0.jpg">
+<a href="https://www.youtube.com/watch?v=fRFNjr7mv18">
+<img src="https://img.youtube.com/vi/fRFNjr7mv18/0.jpg">
 </a>
 
 ---
@@ -96,6 +108,9 @@ spent generating the HOG features.
 
 One approach I took to try to fix this was splitting the video into pieces and using the `multiprocessing` module to
 process them separately. I had trouble getting this working, however, and ended up just waiting.
+
+Also, I had trouble getting sufficient accuracy at first in order to consistently identify cars in the video stream.
+Adding color histogram and spatial color bin features helped boost my accuracy.
 
 One area where my pipeline could fail is if the terrain is hilly, since it assumes cars are in a fixed area in the
 camera image. If there is an upcoming hill, cars on the hill would not be detected. I could fix this by searching a
