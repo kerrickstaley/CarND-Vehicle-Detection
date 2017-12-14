@@ -43,8 +43,11 @@ that the mean for each feature was zero and the variance was one. The total numb
 
 ### SVM
 
-I trained a linear SVM on the normalized features, using 80% of the data for training and 20% for testing. I achieved an
-accuracy of ~98.7% on the test data. In total there were 2628 features.
+I trained a linear SVM on the normalized features, using 80% of the data for training and 20% for testing.
+In total there were 2628 features.
+
+I set the parameter `C` to `0.01` to improve the generalization of the model, and I achieved an
+accuracy of ~99.7% on the test data.
 
 ### Sliding Window Search
 
@@ -92,8 +95,8 @@ Afterwards I did a floodfill to identify distinct islands in the thresholded ima
 I then ran my pipeline on a video. To decrease the number of false positives, I averaged the heatmap values over a
 10-frame window and applied the same threshold (3). This is the result:
 
-<a href="https://www.youtube.com/watch?v=fRFNjr7mv18">
-<img src="https://img.youtube.com/vi/fRFNjr7mv18/0.jpg">
+<a href="https://www.youtube.com/watch?v=wU20WvFEtKM">
+<img src="https://img.youtube.com/vi/wU20WvFEtKM/0.jpg">
 </a>
 
 ---
